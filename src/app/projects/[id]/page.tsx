@@ -77,7 +77,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         </dl>
 
         <h2 className="mt-12 text-xl font-bold">Milestone timeline</h2>
-        <MilestoneTimeline milestones={project.milestones} />
+        <MilestoneTimeline projectId={project.id} initialMilestones={project.milestones} />
 
         {!project.cancelled && (
           <Link

@@ -1,4 +1,15 @@
-import type { Milestone } from '@/lib/api';
+'use client';
+
+import { useEffect, useState } from 'react';
+
+import { getProject, type Milestone } from '@/lib/api';
+
+// Attestation happens on the backend's own schedule (a satellite check
+// crossing a threshold), not in response to anything the donor does — so
+// a page left open needs to poll for it rather than wait for a manual
+// reload. GFW's own data doesn't refresh faster than hours, so this only
+// needs to catch up with the backend's DB, not the satellite itself.
+const POLL_INTERVAL_MS = 15_000;
 
 function formatBps(bps: number): string {
   return `${(bps / 100).toFixed(2)}%`;
@@ -15,11 +26,36 @@ function formatDate(iso: string): string {
 /**
  * Renders a project's tranche-release schedule as a timeline, not a live
  * balance ticker — milestones only ever move from pending to attested at
- * discrete points (when the backend's satellite check confirms a
- * threshold and the attestor signs), so there's nothing to animate
- * between those events.
+ * discrete points, so there's nothing to animate between those events.
+ * Starts from the server-rendered `initialMilestones` and polls the
+ * project for updates afterward, so an attestation that lands while this
+ * page is open still shows up without a manual reload.
  */
-export function MilestoneTimeline({ milestones }: { milestones: Milestone[] }) {
+export function MilestoneTimeline({
+  projectId,
+  initialMilestones,
+}: {
+  projectId: string;
+  initialMilestones: Milestone[];
+}) {
+  const [milestones, setMilestones] = useState(initialMilestones);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getProject(projectId)
+        .then((project) => {
+          if (project) {
+            setMilestones(project.milestones);
+          }
+        })
+        .catch(() => {
+          // A missed refresh isn't worth surfacing — the next poll retries.
+        });
+    }, POLL_INTERVAL_MS);
+
+    return () => clearInterval(interval);
+  }, [projectId]);
+
   if (milestones.length === 0) {
     return <p className="mt-8 text-gray-600">No milestone schedule configured yet.</p>;
   }
