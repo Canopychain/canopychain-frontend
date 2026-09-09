@@ -11,8 +11,9 @@ reforestation funding platform on Stellar.
 ## Local development
 
 ```
+cp .env.example .env
 npm install
-npm run dev
+npm run dev   # http://localhost:3001 — 3000 is taken by canopychain-backend
 ```
 
 ## Related repositories
