@@ -3,33 +3,81 @@
 import { useState, type FormEvent } from 'react';
 
 import { useWallet } from '@/components/wallet/WalletProvider';
+import { getMilestoneVaultClient } from '@/lib/milestoneVaultClient';
+import { getNativeAssetAddress } from '@/lib/stellar';
 
 // Every Stellar Asset Contract token (native XLM included) uses 7 decimal
 // places — that's fixed by the protocol, not something per-asset to look up.
 const TOKEN_DECIMALS = 7;
 
 type TokenChoice = 'native' | 'custom';
+type SubmitState = 'idle' | 'signing' | 'success' | 'error';
 
-export function FundProjectForm({ projectId }: { projectId: string }) {
-  const { address, connect } = useWallet();
+export function FundProjectForm({
+  projectOnChainId,
+  recipientAddress,
+  attestorAddress,
+}: {
+  projectOnChainId: string;
+  recipientAddress: string;
+  attestorAddress: string;
+}) {
+  const { address, connect, signTransaction } = useWallet();
 
   const [tokenChoice, setTokenChoice] = useState<TokenChoice>('native');
   const [customToken, setCustomToken] = useState('');
   const [amount, setAmount] = useState('');
+  const [submitState, setSubmitState] = useState<SubmitState>('idle');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [totalDeposited, setTotalDeposited] = useState<string | null>(null);
 
   const amountNumber = Number(amount);
   const isAmountValid = Number.isFinite(amountNumber) && amountNumber > 0;
   const depositRaw = isAmountValid ? BigInt(Math.round(amountNumber * 10 ** TOKEN_DECIMALS)) : null;
 
   const isTokenValid = tokenChoice === 'native' || customToken.trim().length > 0;
-  const canSubmit = isAmountValid && isTokenValid;
+  const canSubmit = isAmountValid && isTokenValid && submitState !== 'signing';
 
-  function handleSubmit(event: FormEvent): void {
+  async function handleSubmit(event: FormEvent): Promise<void> {
     event.preventDefault();
-    // Transaction building + wallet signing lands in the next commit —
-    // for now this is just the form producing a valid, contract-shaped
-    // deposit amount.
-    console.log('deposit inputs', { projectId, tokenChoice, customToken, depositRaw });
+    if (!canSubmit || !address || depositRaw === null) {
+      return;
+    }
+
+    setSubmitState('signing');
+    setErrorMessage(null);
+
+    try {
+      const tokenAddress = tokenChoice === 'native' ? getNativeAssetAddress() : customToken.trim();
+
+      const client = await getMilestoneVaultClient(address, signTransaction);
+      const tx = await client.deposit({
+        donor: address,
+        project_id: BigInt(projectOnChainId),
+        recipient: recipientAddress,
+        attestor: attestorAddress,
+        token: tokenAddress,
+        amount: depositRaw,
+      });
+      const { result } = await tx.signAndSend();
+
+      setTotalDeposited(String(result));
+      setSubmitState('success');
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : 'Something went wrong.');
+      setSubmitState('error');
+    }
+  }
+
+  if (submitState === 'success' && totalDeposited !== null) {
+    return (
+      <div className="rounded-lg border border-green-200 bg-green-50 p-6">
+        <p className="font-medium text-green-800">Deposit confirmed!</p>
+        <p className="mt-1 text-sm text-green-700">
+          The project&apos;s pool now holds {totalDeposited} (raw units) total.
+        </p>
+      </div>
+    );
   }
 
   if (!address) {
@@ -48,7 +96,7 @@ export function FundProjectForm({ projectId }: { projectId: string }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md space-y-6">
+    <form onSubmit={(event) => void handleSubmit(event)} className="max-w-md space-y-6">
       <fieldset>
         <legend className="text-sm font-medium">Token</legend>
         <div className="mt-2 flex gap-4 text-sm">
@@ -100,12 +148,16 @@ export function FundProjectForm({ projectId }: { projectId: string }) {
         milestones are attested — never all at once.
       </p>
 
+      {submitState === 'error' && errorMessage && (
+        <p className="text-sm text-red-600">{errorMessage}</p>
+      )}
+
       <button
         type="submit"
         disabled={!canSubmit}
         className="w-full rounded-md bg-black px-6 py-3 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
       >
-        Review & Sign
+        {submitState === 'signing' ? 'Confirm in your wallet…' : 'Review & Sign'}
       </button>
     </form>
   );

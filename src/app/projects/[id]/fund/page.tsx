@@ -3,18 +3,18 @@ import { notFound } from 'next/navigation';
 import { FundProjectForm } from '@/components/fund/FundProjectForm';
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
-import { getProject } from '@/lib/api';
+import { getProject, type ProjectProfile } from '@/lib/api';
 
 export default async function FundPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
-  let projectName: string;
+  let project: ProjectProfile;
   try {
-    const project = await getProject(id);
-    if (!project) {
+    const found = await getProject(id);
+    if (!found) {
       notFound();
     }
-    projectName = project.name;
+    project = found;
   } catch {
     return (
       <>
@@ -33,9 +33,19 @@ export default async function FundPage({ params }: { params: Promise<{ id: strin
     <>
       <Header />
       <main className="px-6 py-16 sm:px-12">
-        <h1 className="text-2xl font-bold">Fund {projectName}</h1>
+        <h1 className="text-2xl font-bold">Fund {project.name}</h1>
         <div className="mt-8">
-          <FundProjectForm projectId={id} />
+          {project.recipientAddress && project.attestorAddress ? (
+            <FundProjectForm
+              projectOnChainId={project.onChainId}
+              recipientAddress={project.recipientAddress}
+              attestorAddress={project.attestorAddress}
+            />
+          ) : (
+            <p className="text-gray-600">
+              This project hasn&apos;t finished registration yet and can&apos;t accept funds.
+            </p>
+          )}
         </div>
       </main>
       <Footer />
