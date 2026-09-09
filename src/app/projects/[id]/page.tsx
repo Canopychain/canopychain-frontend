@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { MilestoneTimeline } from '@/components/project/MilestoneTimeline';
 import { PolygonMap } from '@/components/project/PolygonMap';
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
@@ -74,6 +75,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             <dd className="text-lg font-semibold">{project.stats.donorCount}</dd>
           </div>
         </dl>
+
+        <h2 className="mt-12 text-xl font-bold">Milestone timeline</h2>
+        <MilestoneTimeline milestones={project.milestones} />
 
         {!project.cancelled && (
           <Link
