@@ -1,14 +1,32 @@
-import { ConnectWalletButton } from '@/components/wallet/ConnectWalletButton';
+import Link from 'next/link';
 
-// Placeholder — the real landing page (mission, how-it-works) lands in a
-// later commit. This just confirms the scaffold, and now wallet
-// connection, render and wire up end to end.
+import { HowItWorks } from '@/components/landing/HowItWorks';
+import { Footer } from '@/components/layout/Footer';
+import { Header } from '@/components/layout/Header';
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-24">
-      <h1 className="text-3xl font-bold">Canopychain</h1>
-      <p className="text-gray-500">Milestone-verified reforestation funding on Stellar.</p>
-      <ConnectWalletButton />
-    </main>
+    <>
+      <Header />
+      <main>
+        <section className="flex flex-col items-center gap-6 px-6 py-24 text-center sm:px-12">
+          <h1 className="max-w-2xl text-4xl font-bold sm:text-5xl">
+            Fund reforestation that has to prove itself.
+          </h1>
+          <p className="max-w-xl text-gray-600">
+            Canopychain releases donor funds in tranches, only when satellite data confirms real
+            forest-cover change on a GPS-bounded plot — transparent, on-chain, and verified.
+          </p>
+          <Link
+            href="/projects"
+            className="rounded-md bg-black px-6 py-3 text-sm font-medium text-white hover:bg-gray-800"
+          >
+            Explore Projects
+          </Link>
+        </section>
+        <HowItWorks />
+      </main>
+      <Footer />
+    </>
   );
 }
