@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { FundProjectForm } from '@/components/fund/FundProjectForm';
@@ -5,7 +6,15 @@ import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
 import { getProject, type ProjectProfile } from '@/lib/api';
 
-export default async function FundPage({ params }: { params: Promise<{ id: string }> }) {
+type Props = { params: Promise<{ id: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const project = await getProject(id).catch(() => null);
+  return { title: project ? `Fund ${project.name}` : 'Project not found' };
+}
+
+export default async function FundPage({ params }: Props) {
   const { id } = await params;
 
   let project: ProjectProfile;

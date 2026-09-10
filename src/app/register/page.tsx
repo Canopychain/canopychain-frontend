@@ -1,6 +1,13 @@
+import type { Metadata } from 'next';
+
 import { OperatorRegistrationForm } from '@/components/operator/OperatorRegistrationForm';
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
+
+export const metadata: Metadata = {
+  title: 'Register a Project',
+  description: 'Register a reforestation project on Canopychain for milestone-verified funding.',
+};
 
 export default function RegisterProjectPage() {
   return (

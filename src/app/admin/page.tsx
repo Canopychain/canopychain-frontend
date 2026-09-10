@@ -110,7 +110,11 @@ export default function AdminPage() {
           </div>
         )}
 
-        {address && loading && <p className="mt-8 text-gray-500">Loading…</p>}
+        {address && loading && (
+          <p role="status" className="mt-8 text-gray-500">
+            Loading…
+          </p>
+        )}
 
         {address && error && <p className="mt-8 text-red-600">{error}</p>}
 
@@ -125,11 +129,11 @@ export default function AdminPage() {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <h2 className="font-semibold">{project.name}</h2>
-                    <p className="mt-2 font-mono text-xs break-all text-gray-400">
+                    <p className="mt-2 font-mono text-xs break-all text-gray-500">
                       Operator {project.operatorAddress}
                     </p>
                     {project.recipientAddress && (
-                      <p className="mt-1 font-mono text-xs break-all text-gray-400">
+                      <p className="mt-1 font-mono text-xs break-all text-gray-500">
                         Recipient {project.recipientAddress}
                       </p>
                     )}

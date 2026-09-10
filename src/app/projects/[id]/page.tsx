@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -7,7 +8,25 @@ import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
 import { getProject, type ProjectProfile } from '@/lib/api';
 
-export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
+type Props = { params: Promise<{ id: string }> };
+
+// Next.js dedupes identical fetch() calls made during the same request, so
+// this doesn't cost a second network round-trip on top of the page itself.
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const project = await getProject(id).catch(() => null);
+
+  if (!project) {
+    return { title: 'Project not found' };
+  }
+
+  return {
+    title: project.name,
+    description: `Fund ${project.name}, a milestone-verified reforestation project on Canopychain.`,
+  };
+}
+
+export default async function ProjectPage({ params }: Props) {
   const { id } = await params;
 
   let project: ProjectProfile | null;

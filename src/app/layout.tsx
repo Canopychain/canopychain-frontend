@@ -16,9 +16,27 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
+const DESCRIPTION = 'Milestone-verified reforestation funding on Stellar.';
+
 export const metadata: Metadata = {
-  title: 'Canopychain',
-  description: 'Milestone-verified reforestation funding on Stellar.',
+  title: {
+    default: 'Canopychain',
+    // Child routes set just their own segment (e.g. "Explore Projects")
+    // and get this composed automatically, rather than repeating
+    // "Canopychain" in every page's own metadata.
+    template: '%s — Canopychain',
+  },
+  description: DESCRIPTION,
+  openGraph: {
+    title: 'Canopychain',
+    description: DESCRIPTION,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Canopychain',
+    description: DESCRIPTION,
+  },
 };
 
 export default function RootLayout({

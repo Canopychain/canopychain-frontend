@@ -1,8 +1,15 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
 import { getProjects, type Project } from '@/lib/api';
+
+export const metadata: Metadata = {
+  title: 'Explore Projects',
+  description:
+    'Browse GPS-bounded reforestation projects funded through milestone-verified escrow on Stellar.',
+};
 
 export default async function ProjectsPage() {
   let projects: Project[] = [];
