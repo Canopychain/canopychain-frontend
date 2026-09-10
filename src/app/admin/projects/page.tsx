@@ -4,12 +4,14 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
+import { useToast } from '@/components/toast/ToastProvider';
 import { useWallet } from '@/components/wallet/WalletProvider';
 import { listAllProjects, type PendingProject } from '@/lib/adminApi';
 import { getMilestoneVaultClient } from '@/lib/milestoneVaultClient';
 
 export default function ProjectOversightPage() {
   const { address, connect, signMessage, signTransaction } = useWallet();
+  const { showToast } = useToast();
   const [projects, setProjects] = useState<PendingProject[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,8 +58,11 @@ export default function ProjectOversightPage() {
         current.map((p) => (p.id === project.id ? { ...p, attestorAddress: newAttestor } : p)),
       );
       setAttestorDrafts((current) => ({ ...current, [project.id]: '' }));
+      showToast('success', `Attestor rotated for "${project.name}".`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong.');
+      const message = err instanceof Error ? err.message : 'Something went wrong.';
+      setError(message);
+      showToast('error', message);
     } finally {
       setBusyId(null);
     }
@@ -79,8 +84,11 @@ export default function ProjectOversightPage() {
       setProjects((current) =>
         current.map((p) => (p.id === project.id ? { ...p, cancelled: true } : p)),
       );
+      showToast('success', `Cancelled "${project.name}".`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong.');
+      const message = err instanceof Error ? err.message : 'Something went wrong.';
+      setError(message);
+      showToast('error', message);
     } finally {
       setBusyId(null);
     }

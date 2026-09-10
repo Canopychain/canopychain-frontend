@@ -3,6 +3,7 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 
 import { PolygonMap } from '@/components/project/PolygonMap';
+import { useToast } from '@/components/toast/ToastProvider';
 import { useWallet } from '@/components/wallet/WalletProvider';
 import { ApiError, registerProjectDetails, type PolygonGeometry } from '@/lib/api';
 import { bytesToHex, hashPolygon, parsePolygonFile } from '@/lib/polygon';
@@ -12,6 +13,7 @@ type Status = 'idle' | 'submitting' | 'success' | 'error';
 
 export function OperatorRegistrationForm() {
   const { address, connect, signTransaction } = useWallet();
+  const { showToast } = useToast();
 
   const [name, setName] = useState('');
   const [recipientAddress, setRecipientAddress] = useState('');
@@ -80,11 +82,13 @@ export function OperatorRegistrationForm() {
 
       setProjectId(onChainId);
       setStatus('success');
+      showToast('success', 'Project registered on-chain.');
     } catch (err) {
       const message =
         err instanceof ApiError || err instanceof Error ? err.message : 'Something went wrong.';
       setErrorMessage(message);
       setStatus('error');
+      showToast('error', message);
     }
   }
 

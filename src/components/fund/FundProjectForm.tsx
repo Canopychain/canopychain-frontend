@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 
+import { useToast } from '@/components/toast/ToastProvider';
 import { useWallet } from '@/components/wallet/WalletProvider';
 import { getMilestoneVaultClient } from '@/lib/milestoneVaultClient';
 import { getNativeAssetAddress } from '@/lib/stellar';
@@ -23,6 +24,7 @@ export function FundProjectForm({
   attestorAddress: string;
 }) {
   const { address, connect, signTransaction } = useWallet();
+  const { showToast } = useToast();
 
   const [tokenChoice, setTokenChoice] = useState<TokenChoice>('native');
   const [customToken, setCustomToken] = useState('');
@@ -63,9 +65,12 @@ export function FundProjectForm({
 
       setTotalDeposited(String(result));
       setSubmitState('success');
+      showToast('success', 'Deposit confirmed on-chain.');
     } catch (err) {
-      setErrorMessage(err instanceof Error ? err.message : 'Something went wrong.');
+      const message = err instanceof Error ? err.message : 'Something went wrong.';
+      setErrorMessage(message);
       setSubmitState('error');
+      showToast('error', message);
     }
   }
 

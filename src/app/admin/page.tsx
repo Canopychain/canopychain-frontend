@@ -6,12 +6,14 @@ import Link from 'next/link';
 
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
+import { useToast } from '@/components/toast/ToastProvider';
 import { useWallet } from '@/components/wallet/WalletProvider';
 import { listPendingProjects, rejectProject, type PendingProject } from '@/lib/adminApi';
 import { getProjectRegistryClient } from '@/lib/projectRegistryClient';
 
 export default function AdminPage() {
   const { address, connect, signMessage, signTransaction } = useWallet();
+  const { showToast } = useToast();
   const [projects, setProjects] = useState<PendingProject[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -53,8 +55,11 @@ export default function AdminPage() {
       await tx.signAndSend();
 
       setProjects((current) => current.filter((p) => p.id !== project.id));
+      showToast('success', `Approved "${project.name}" on-chain.`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong.');
+      const message = err instanceof Error ? err.message : 'Something went wrong.';
+      setError(message);
+      showToast('error', message);
     } finally {
       setBusyId(null);
     }
@@ -67,8 +72,11 @@ export default function AdminPage() {
     try {
       await rejectProject(address, signMessage, project.id);
       setProjects((current) => current.filter((p) => p.id !== project.id));
+      showToast('success', `Rejected "${project.name}".`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong.');
+      const message = err instanceof Error ? err.message : 'Something went wrong.';
+      setError(message);
+      showToast('error', message);
     } finally {
       setBusyId(null);
     }
