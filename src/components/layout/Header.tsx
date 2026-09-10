@@ -18,6 +18,9 @@ export function Header() {
         <Link href="/impact" className="text-sm font-medium text-gray-600 hover:text-black">
           Impact
         </Link>
+        <Link href="/register" className="text-sm font-medium text-gray-600 hover:text-black">
+          Register a Project
+        </Link>
         <ConnectWalletButton />
       </nav>
     </header>

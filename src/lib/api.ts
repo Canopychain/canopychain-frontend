@@ -1,5 +1,13 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000';
 
+export class ApiError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
+}
+
 export type Project = {
   id: string;
   onChainId: string;
@@ -74,6 +82,30 @@ export async function getDonations(donor: string): Promise<Donation[]> {
   const res = await fetch(`${API_URL}/donations?donor=${encodeURIComponent(donor)}`);
   if (!res.ok) {
     throw new Error(`Failed to fetch donations: ${res.status}`);
+  }
+  return res.json();
+}
+
+export type ProjectRegistrationInput = {
+  onChainId: string;
+  recipientAddress: string;
+  attestorAddress: string;
+  polygonHash: string;
+  polygonGeoJson: PolygonGeometry;
+};
+
+/** Attaches the off-chain project details (polygon, recipient, attestor)
+ * to the on-chain project id an operator just got back from calling
+ * project-registry's `register`. */
+export async function registerProjectDetails(input: ProjectRegistrationInput): Promise<Project> {
+  const res = await fetch(`${API_URL}/projects/register`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(input),
+  });
+
+  if (!res.ok) {
+    throw new ApiError('Failed to submit project details.', res.status);
   }
   return res.json();
 }
