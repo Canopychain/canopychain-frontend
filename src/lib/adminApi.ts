@@ -48,6 +48,19 @@ export async function listPendingProjects(
   return res.json();
 }
 
+/** Every project regardless of status — the oversight view, distinct from
+ * the pending-only approval queue. */
+export async function listAllProjects(
+  address: string,
+  signMessage: WalletSignMessage,
+): Promise<PendingProject[]> {
+  const res = await adminFetch('GET', '/projects/all', address, signMessage);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch projects: ${res.status}`);
+  }
+  return res.json();
+}
+
 export async function rejectProject(
   address: string,
   signMessage: WalletSignMessage,

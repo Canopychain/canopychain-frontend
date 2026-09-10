@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
+import Link from 'next/link';
+
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
 import { useWallet } from '@/components/wallet/WalletProvider';
@@ -83,6 +85,9 @@ export default function AdminPage() {
           can act here — approving calls the on-chain registry directly; rejecting is
           backend-only, since there&apos;s no on-chain &quot;reject&quot;.
         </p>
+        <Link href="/admin/projects" className="mt-2 inline-block text-sm underline">
+          View all projects (oversight) →
+        </Link>
 
         {!address && (
           <div className="mt-8 rounded-lg border border-gray-200 p-6 text-center">
