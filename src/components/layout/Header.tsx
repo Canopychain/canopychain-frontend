@@ -12,6 +12,9 @@ export function Header() {
         <Link href="/projects" className="text-sm font-medium text-gray-600 hover:text-black">
           Explore Projects
         </Link>
+        <Link href="/dashboard" className="text-sm font-medium text-gray-600 hover:text-black">
+          Dashboard
+        </Link>
         <ConnectWalletButton />
       </nav>
     </header>

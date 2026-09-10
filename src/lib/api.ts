@@ -60,3 +60,20 @@ export async function getProject(id: string): Promise<ProjectProfile | null> {
   }
   return res.json();
 }
+
+export type Donation = {
+  id: string;
+  amount: string;
+  createdAt: string;
+  project: Project;
+};
+
+/** Called client-side (it depends on the connected wallet address, which
+ * only exists in the browser), so no Next.js server-fetch caching options. */
+export async function getDonations(donor: string): Promise<Donation[]> {
+  const res = await fetch(`${API_URL}/donations?donor=${encodeURIComponent(donor)}`);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch donations: ${res.status}`);
+  }
+  return res.json();
+}
