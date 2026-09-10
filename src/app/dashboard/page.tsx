@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
+import { RefundButton } from '@/components/dashboard/RefundButton';
 import { useWallet } from '@/components/wallet/WalletProvider';
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
@@ -15,7 +16,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState(false);
 
-  useEffect(() => {
+  function refresh(): void {
     if (!address) {
       setDonations([]);
       return;
@@ -27,7 +28,9 @@ export default function DashboardPage() {
       .then(setDonations)
       .catch(() => setLoadError(true))
       .finally(() => setLoading(false));
-  }, [address]);
+  }
+
+  useEffect(refresh, [address]);
 
   const totalDonated = donations.reduce((sum, d) => sum + BigInt(d.amount), 0n);
   const fundedProjectCount = new Set(donations.map((d) => d.project.id)).size;
@@ -103,6 +106,12 @@ export default function DashboardPage() {
                         {formatAmount(donation.project.totalDeposited)}
                       </p>
                     </div>
+                    {donation.project.cancelled && (
+                      <RefundButton
+                        projectOnChainId={donation.project.onChainId}
+                        onRefunded={refresh}
+                      />
+                    )}
                   </div>
                 </li>
               ))}
