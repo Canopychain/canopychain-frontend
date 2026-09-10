@@ -122,7 +122,7 @@ export default function ProjectOversightPage() {
           <ul className="mt-8 space-y-4">
             {projects.map((project) => (
               <li key={project.id} className="rounded-lg border border-gray-200 p-6">
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <div className="flex items-center gap-2">
                       <h2 className="font-semibold">{project.name}</h2>
@@ -147,7 +147,7 @@ export default function ProjectOversightPage() {
                 </div>
 
                 {!project.cancelled && (
-                  <div className="mt-4 flex items-center gap-2">
+                  <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
                     <input
                       type="text"
                       value={attestorDrafts[project.id] ?? ''}

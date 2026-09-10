@@ -114,7 +114,7 @@ export default function AdminPage() {
           <ul className="mt-8 space-y-4">
             {projects.map((project) => (
               <li key={project.id} className="rounded-lg border border-gray-200 p-6">
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <h2 className="font-semibold">{project.name}</h2>
                     <p className="mt-2 font-mono text-xs break-all text-gray-400">
@@ -126,7 +126,7 @@ export default function AdminPage() {
                       </p>
                     )}
                   </div>
-                  <div className="flex shrink-0 gap-2">
+                  <div className="flex flex-wrap justify-end gap-2">
                     <button
                       type="button"
                       onClick={() => void handleApprove(project)}
