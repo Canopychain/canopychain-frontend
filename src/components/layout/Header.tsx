@@ -21,6 +21,9 @@ export function Header() {
         <Link href="/register" className="text-sm font-medium text-gray-600 hover:text-black">
           Register a Project
         </Link>
+        <Link href="/admin" className="text-sm font-medium text-gray-600 hover:text-black">
+          Admin
+        </Link>
         <ConnectWalletButton />
       </nav>
     </header>
