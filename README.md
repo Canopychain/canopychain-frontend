@@ -8,6 +8,30 @@ reforestation funding platform on Stellar.
 - Next.js (App Router), React, TypeScript
 - Tailwind CSS
 
+## Component overview
+
+Reads and writes take different paths:
+
+- **Reads** — project listings, donation history, milestone status — come
+  from `canopychain-backend`'s API via [src/lib/api.ts](./src/lib/api.ts).
+  This is the indexed, off-chain view of on-chain state.
+- **Writes** — donating, registering a project, attesting a milestone — go
+  straight from the browser to the Soroban contracts, via the typed clients
+  in [src/lib](./src/lib) (`projectRegistryClient.ts`,
+  `milestoneVaultClient.ts`), built on `@stellar/stellar-sdk/contract`. The
+  frontend never proxies a write through the backend.
+
+Wallet access — connecting, signing transactions — is centralized behind
+one context provider,
+[WalletProvider](./src/components/wallet/WalletProvider.tsx). Every
+component that needs the connected address or a signer goes through its
+`useWallet()` hook rather than talking to a wallet extension directly.
+
+That split — reads from the indexer, writes straight to the contracts,
+wallet access through a single provider, contract clients confined to
+`src/lib` — is the thing to understand before changing how data flows
+through this app.
+
 ## Local development
 
 ```
@@ -43,6 +67,7 @@ there's no route here meant to be embedded elsewhere.
 
 - [ROUTES.md](./ROUTES.md) — every route, its audience, and whether it's wallet-gated
 - [ENVIRONMENT.md](./ENVIRONMENT.md) — every `NEXT_PUBLIC_*` variable, what breaks without it, and where its value comes from
+- [HASHING.md](./HASHING.md) — how polygon geometry gets hashed, and the cross-repo invariant that makes it safe
 
 ## Related repositories
 
