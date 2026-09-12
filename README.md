@@ -39,6 +39,11 @@ Every route also gets `X-Frame-Options: DENY`, `X-Content-Type-Options:
 nosniff`, and a strict `Referrer-Policy` (see `src/middleware.ts`) —
 there's no route here meant to be embedded elsewhere.
 
+## Docs
+
+- [ROUTES.md](./ROUTES.md) — every route, its audience, and whether it's wallet-gated
+- [ENVIRONMENT.md](./ENVIRONMENT.md) — every `NEXT_PUBLIC_*` variable, what breaks without it, and where its value comes from
+
 ## Related repositories
 
 - [canopychain-contracts](https://github.com/canopychain/canopychain-contracts) — Soroban smart contracts
