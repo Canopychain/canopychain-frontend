@@ -67,6 +67,7 @@ there's no route here meant to be embedded elsewhere.
 
 - [ROUTES.md](./ROUTES.md) — every route, its audience, and whether it's wallet-gated
 - [ENVIRONMENT.md](./ENVIRONMENT.md) — every `NEXT_PUBLIC_*` variable, what breaks without it, and where its value comes from
+- [HASHING.md](./HASHING.md) — how polygon geometry gets hashed, and the cross-repo invariant that makes it safe
 
 ## Related repositories
 
