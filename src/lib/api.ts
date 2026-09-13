@@ -41,6 +41,10 @@ export type Milestone = {
   status: 'PENDING' | 'ATTESTED';
   attestedAt: string | null;
   payoutAmount: string | null;
+  /** Latest satellite-confirmed forest-cover-change reading for the
+   * project, in the same basis-point units as `thresholdBps`. Null when
+   * no satellite check has landed yet. */
+  currentValueBps: number | null;
 };
 
 export type ProjectProfile = Project & {

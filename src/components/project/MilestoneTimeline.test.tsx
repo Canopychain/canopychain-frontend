@@ -22,6 +22,7 @@ function makeMilestone(overrides: Partial<Milestone> = {}): Milestone {
     status: 'PENDING',
     attestedAt: null,
     payoutAmount: null,
+    currentValueBps: null,
     ...overrides,
   };
 }

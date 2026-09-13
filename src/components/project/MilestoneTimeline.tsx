@@ -61,11 +61,18 @@ export function MilestoneTimeline({
   }
 
   const sorted = [...milestones].sort((a, b) => a.index - b.index);
+  const nextIndex = sorted.findIndex((milestone) => milestone.status === 'PENDING');
 
   return (
     <ol className="mt-8 space-y-6">
-      {sorted.map((milestone) => {
+      {sorted.map((milestone, position) => {
         const attested = milestone.status === 'ATTESTED';
+        const isNext = position === nextIndex;
+        const progressPct =
+          isNext && milestone.currentValueBps !== null
+            ? Math.min(100, (milestone.currentValueBps / milestone.thresholdBps) * 100)
+            : null;
+
         return (
           <li key={milestone.id} className="flex gap-4">
             <div
@@ -75,7 +82,7 @@ export function MilestoneTimeline({
             >
               {milestone.index + 1}
             </div>
-            <div>
+            <div className="flex-1">
               <p className="font-medium">
                 {formatBps(milestone.thresholdBps)} forest-cover change &middot;{' '}
                 {formatBps(milestone.payoutBps)} of funds
@@ -85,6 +92,19 @@ export function MilestoneTimeline({
                   Attested{milestone.attestedAt ? ` ${formatDate(milestone.attestedAt)}` : ''}
                   {milestone.payoutAmount ? ` — released ${milestone.payoutAmount}` : ''}
                 </p>
+              ) : progressPct !== null ? (
+                <div className="mt-2 max-w-xs">
+                  <p className="text-sm text-gray-500">
+                    {formatBps(milestone.currentValueBps ?? 0)} of {formatBps(milestone.thresholdBps)}{' '}
+                    &middot; {progressPct.toFixed(0)}% of the way there
+                  </p>
+                  <div className="mt-1 h-2 rounded-full bg-gray-200">
+                    <div
+                      className="h-2 rounded-full bg-green-600"
+                      style={{ width: `${progressPct}%` }}
+                    />
+                  </div>
+                </div>
               ) : (
                 <p className="mt-1 text-sm text-gray-500">Pending</p>
               )}
