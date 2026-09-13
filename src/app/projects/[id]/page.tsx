@@ -71,6 +71,14 @@ export default async function ProjectPage({ params }: Props) {
         {project.polygonGeoJson && (
           <div className="mt-8">
             <PolygonMap geometry={project.polygonGeoJson} />
+            {project.polygonHash && (
+              <p className="mt-2 text-sm text-gray-500">
+                Polygon hash (committed on-chain by the project registry):{' '}
+                <span className="font-mono text-xs break-all text-gray-500">
+                  {project.polygonHash}
+                </span>
+              </p>
+            )}
           </div>
         )}
 
