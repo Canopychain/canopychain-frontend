@@ -18,13 +18,25 @@ export function FundProjectForm({
   projectOnChainId,
   recipientAddress,
   attestorAddress,
+  hasMilestoneSchedule,
 }: {
   projectOnChainId: string;
   recipientAddress: string;
   attestorAddress: string;
+  hasMilestoneSchedule: boolean;
 }) {
   const { address, connect, signTransaction } = useWallet();
   const { showToast } = useToast();
+
+  const scheduleWarning = !hasMilestoneSchedule && (
+    <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4">
+      <p className="font-medium text-amber-800">No milestone schedule yet</p>
+      <p className="mt-1 text-sm text-amber-700">
+        This project hasn&apos;t had its milestone schedule configured. Funds you deposit will
+        sit in escrow and can&apos;t be released until an admin sets one up.
+      </p>
+    </div>
+  );
 
   const [tokenChoice, setTokenChoice] = useState<TokenChoice>('native');
   const [customToken, setCustomToken] = useState('');
@@ -87,83 +99,89 @@ export function FundProjectForm({
 
   if (!address) {
     return (
-      <div className="rounded-lg border border-gray-200 p-6 text-center">
-        <p className="text-gray-600">Connect your wallet to fund this project.</p>
-        <button
-          type="button"
-          onClick={() => void connect()}
-          className="mt-4 rounded-md bg-black px-6 py-3 text-sm font-medium text-white hover:bg-gray-800"
-        >
-          Connect Wallet
-        </button>
+      <div className="max-w-md">
+        {scheduleWarning}
+        <div className="rounded-lg border border-gray-200 p-6 text-center">
+          <p className="text-gray-600">Connect your wallet to fund this project.</p>
+          <button
+            type="button"
+            onClick={() => void connect()}
+            className="mt-4 rounded-md bg-black px-6 py-3 text-sm font-medium text-white hover:bg-gray-800"
+          >
+            Connect Wallet
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <form onSubmit={(event) => void handleSubmit(event)} className="max-w-md space-y-6">
-      <fieldset>
-        <legend className="text-sm font-medium">Token</legend>
-        <div className="mt-2 flex gap-4 text-sm">
-          <label className="flex items-center gap-2">
+    <div className="max-w-md">
+      {scheduleWarning}
+      <form onSubmit={(event) => void handleSubmit(event)} className="space-y-6">
+        <fieldset>
+          <legend className="text-sm font-medium">Token</legend>
+          <div className="mt-2 flex gap-4 text-sm">
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="token"
+                checked={tokenChoice === 'native'}
+                onChange={() => setTokenChoice('native')}
+              />
+              XLM (native)
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="token"
+                checked={tokenChoice === 'custom'}
+                onChange={() => setTokenChoice('custom')}
+              />
+              Custom asset
+            </label>
+          </div>
+          {tokenChoice === 'custom' && (
             <input
-              type="radio"
-              name="token"
-              checked={tokenChoice === 'native'}
-              onChange={() => setTokenChoice('native')}
+              type="text"
+              value={customToken}
+              onChange={(event) => setCustomToken(event.target.value)}
+              placeholder="Token contract address (C...)"
+              className="mt-2 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
             />
-            XLM (native)
-          </label>
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="token"
-              checked={tokenChoice === 'custom'}
-              onChange={() => setTokenChoice('custom')}
-            />
-            Custom asset
-          </label>
-        </div>
-        {tokenChoice === 'custom' && (
+          )}
+        </fieldset>
+
+        <label className="block">
+          <span className="text-sm font-medium">Amount</span>
           <input
-            type="text"
-            value={customToken}
-            onChange={(event) => setCustomToken(event.target.value)}
-            placeholder="Token contract address (C...)"
+            type="number"
+            min="0"
+            step="any"
+            value={amount}
+            onChange={(event) => setAmount(event.target.value)}
+            placeholder="100"
             className="mt-2 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
           />
+        </label>
+
+        <p className="text-sm text-gray-500">
+          Funds are held in the project&apos;s escrow vault and released to the operator only as
+          milestones are attested — never all at once.
+        </p>
+
+        {submitState === 'error' && errorMessage && (
+          <p className="text-sm text-red-600">{errorMessage}</p>
         )}
-      </fieldset>
 
-      <label className="block">
-        <span className="text-sm font-medium">Amount</span>
-        <input
-          type="number"
-          min="0"
-          step="any"
-          value={amount}
-          onChange={(event) => setAmount(event.target.value)}
-          placeholder="100"
-          className="mt-2 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-        />
-      </label>
-
-      <p className="text-sm text-gray-500">
-        Funds are held in the project&apos;s escrow vault and released to the operator only as
-        milestones are attested — never all at once.
-      </p>
-
-      {submitState === 'error' && errorMessage && (
-        <p className="text-sm text-red-600">{errorMessage}</p>
-      )}
-
-      <button
-        type="submit"
-        disabled={!canSubmit}
-        className="w-full rounded-md bg-black px-6 py-3 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
-      >
-        {submitState === 'signing' ? 'Confirm in your wallet…' : 'Review & Sign'}
-      </button>
-    </form>
+        <button
+          type="submit"
+          disabled={!canSubmit}
+          className="w-full rounded-md bg-black px-6 py-3 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+        >
+          {submitState === 'signing' ? 'Confirm in your wallet…' : 'Review & Sign'}
+        </button>
+      </form>
+    </div>
   );
 }

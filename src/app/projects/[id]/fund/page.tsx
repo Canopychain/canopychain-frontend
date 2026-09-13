@@ -49,6 +49,7 @@ export default async function FundPage({ params }: Props) {
               projectOnChainId={project.onChainId}
               recipientAddress={project.recipientAddress}
               attestorAddress={project.attestorAddress}
+              hasMilestoneSchedule={project.milestones.length > 0}
             />
           ) : (
             <p className="text-gray-600">
