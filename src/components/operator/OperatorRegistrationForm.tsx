@@ -167,7 +167,6 @@ export function OperatorRegistrationForm() {
           type="file"
           accept=".json,.geojson,application/json,application/geo+json"
           onChange={handleFileChange}
-          required
           className="mt-2 w-full text-sm"
         />
         <span className="mt-1 block text-xs text-gray-500">
