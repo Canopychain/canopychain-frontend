@@ -40,12 +40,13 @@ vi.mock('@/lib/milestoneVaultClient', () => ({
   })),
 }));
 
-function renderForm() {
+function renderForm({ hasMilestoneSchedule = true } = {}) {
   return render(
     <FundProjectForm
       projectOnChainId={PROJECT_ON_CHAIN_ID}
       recipientAddress={RECIPIENT_ADDRESS}
       attestorAddress={ATTESTOR_ADDRESS}
+      hasMilestoneSchedule={hasMilestoneSchedule}
     />,
   );
 }

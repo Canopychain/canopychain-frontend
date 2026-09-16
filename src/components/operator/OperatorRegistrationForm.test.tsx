@@ -50,7 +50,11 @@ vi.mock('@/lib/projectRegistryClient', () => ({
   })),
 }));
 
-const mockRegisterProjectDetails = vi.fn();
+// hoisted: vi.mock is lifted above this file's consts, and the api factory
+// below dereferences the mock as it runs rather than closing over it.
+const { mockRegisterProjectDetails } = vi.hoisted(() => ({
+  mockRegisterProjectDetails: vi.fn(),
+}));
 
 vi.mock('@/lib/api', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/lib/api')>();
@@ -119,6 +123,9 @@ describe('OperatorRegistrationForm', () => {
 
     await fillRequiredFields(user);
     await user.upload(screen.getByLabelText(/plot boundary/i), makeFile(VALID_POLYGON_GEOJSON));
+    // the file is parsed in a FileReader callback, so the geometry only lands
+    // in state a tick after upload() resolves.
+    await screen.findByTestId('polygon-map');
     await user.click(screen.getByRole('button', { name: /register project/i }));
 
     expect(await screen.findByText(/project registered/i)).toBeInTheDocument();
@@ -152,6 +159,9 @@ describe('OperatorRegistrationForm', () => {
 
     await fillRequiredFields(user);
     await user.upload(screen.getByLabelText(/plot boundary/i), makeFile(VALID_POLYGON_GEOJSON));
+    // the file is parsed in a FileReader callback, so the geometry only lands
+    // in state a tick after upload() resolves.
+    await screen.findByTestId('polygon-map');
     await user.click(screen.getByRole('button', { name: /register project/i }));
 
     expect(await screen.findByText('Failed to submit project details.')).toBeInTheDocument();

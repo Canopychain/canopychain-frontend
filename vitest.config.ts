@@ -11,6 +11,8 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./test/setup.ts'],
+    // e2e/ is playwright's; vitest can't run those specs.
+    exclude: ['node_modules/**', 'e2e/**'],
   },
   resolve: {
     // Mirrors tsconfig.json's baseUrl/paths — Vitest doesn't read those
