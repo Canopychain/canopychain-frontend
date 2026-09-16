@@ -10,3 +10,8 @@ next-env.d.ts
 test-results
 playwright-report
 blob-report
+tsconfig.tsbuildinfo
+
+# written by `next dev` on every run
+AGENTS.md
+CLAUDE.md
