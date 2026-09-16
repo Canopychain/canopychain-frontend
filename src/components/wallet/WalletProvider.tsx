@@ -2,6 +2,9 @@
 
 import { defaultModules } from '@creit.tech/stellar-wallets-kit/modules/utils';
 import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit/sdk';
+import type { SignTransaction } from '@stellar/stellar-sdk/contract';
+
+import { NETWORK_PASSPHRASE } from '@/lib/stellar';
 import {
   createContext,
   useCallback,
@@ -12,14 +15,11 @@ import {
   type ReactNode,
 } from 'react';
 
-/** SEP-43's standard signing-callback shape — also exactly what
- * @stellar/stellar-sdk/contract's Client.from expects for its
- * `signTransaction` option, so this can be passed straight through with
- * no adapter at every contract-call site. */
-export type WalletSignTransaction = (
-  xdr: string,
-  opts: { networkPassphrase: string; address?: string },
-) => Promise<{ signedTxXdr: string; signerAddress?: string }>;
+/** SEP-43's standard signing-callback shape. Aliased straight to the SDK's
+ * own type so it stays assignable to Client.from's `signTransaction` option
+ * with no adapter at the call sites — note `opts` and its fields are all
+ * optional there, and the SDK does omit them. */
+export type WalletSignTransaction = SignTransaction;
 
 /** SEP-53 generic message signing (distinct from signTransaction, which
  * signs a Stellar transaction envelope). The wallet applies the
@@ -84,12 +84,12 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
   const signTransaction: WalletSignTransaction = useCallback(
     async (xdr, opts) => {
-      const signerAddress = opts.address ?? address;
+      const signerAddress = opts?.address ?? address;
       if (!signerAddress) {
         throw new Error('No wallet connected');
       }
       return StellarWalletsKit.signTransaction(xdr, {
-        networkPassphrase: opts.networkPassphrase,
+        networkPassphrase: opts?.networkPassphrase ?? NETWORK_PASSPHRASE,
         address: signerAddress,
       });
     },
