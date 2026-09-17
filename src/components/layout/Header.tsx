@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 
+import { Logo } from '@/components/layout/Logo';
 import { ConnectWalletButton } from '@/components/wallet/ConnectWalletButton';
 
 const NAV_LINKS = [
@@ -19,7 +20,12 @@ export function Header() {
   return (
     <header className="border-b border-gray-200 px-6 py-4 sm:px-12">
       <div className="flex items-center justify-between">
-        <Link href="/" className="text-lg font-bold" onClick={() => setMenuOpen(false)}>
+        <Link
+          href="/"
+          className="flex items-center gap-2.5 text-lg font-bold"
+          onClick={() => setMenuOpen(false)}
+        >
+          <Logo className="h-7 w-7 text-green-700" />
           Canopychain
         </Link>
 
