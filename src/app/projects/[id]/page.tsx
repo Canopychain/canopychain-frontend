@@ -104,7 +104,11 @@ export default async function ProjectPage({ params }: Props) {
         </dl>
 
         <h2 className="mt-12 text-xl font-bold">Milestone timeline</h2>
-        <MilestoneTimeline projectId={project.id} initialMilestones={project.milestones} />
+        <MilestoneTimeline
+          projectId={project.id}
+          initialMilestones={project.milestones}
+          initialProgress={project.nextMilestoneProgress}
+        />
 
         {!project.cancelled && (
           <Link

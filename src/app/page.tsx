@@ -14,8 +14,9 @@ export default function Home() {
             Fund reforestation that has to prove itself.
           </h1>
           <p className="max-w-xl text-gray-600">
-            Canopychain releases donor funds in tranches, only when satellite data confirms real
-            forest-cover change on a GPS-bounded plot — transparent, on-chain, and verified.
+            Canopychain releases donor funds in tranches, only once satellite data confirms the
+            forest on a GPS-bounded plot is still standing months later — transparent, on-chain,
+            and verified.
           </p>
           <Link
             href="/projects"

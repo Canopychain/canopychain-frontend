@@ -36,15 +36,27 @@ export type PolygonGeometry =
 export type Milestone = {
   id: string;
   index: number;
-  thresholdBps: number;
+  /** Share of the plot's baseline forest that must still be standing. */
+  retentionFloorBps: number;
+  /** How long retention must hold at or above the floor to earn this tranche. */
+  sustainSeconds: number;
   payoutBps: number;
   status: 'PENDING' | 'ATTESTED';
   attestedAt: string | null;
   payoutAmount: string | null;
-  /** Latest satellite-confirmed forest-cover-change reading for the
-   * project, in the same basis-point units as `thresholdBps`. Null when
-   * no satellite check has landed yet. */
-  currentValueBps: number | null;
+};
+
+/** Where a project stands against its next pending milestone, computed
+ * server-side by the same evaluator that decides whether to attest. */
+export type NextMilestoneProgress = {
+  index: number;
+  retentionFloorBps: number;
+  requiredSeconds: number;
+  /** Retention at the latest check, or null if none has landed yet. */
+  currentRetentionBps: number | null;
+  /** Length of the unbroken run of checks at or above the floor. */
+  sustainedSeconds: number;
+  ready: boolean;
 };
 
 export type ProjectProfile = Project & {
@@ -53,6 +65,8 @@ export type ProjectProfile = Project & {
   polygonGeoJson: PolygonGeometry | null;
   polygonHash: string | null;
   milestones: Milestone[];
+  /** Null when a project has no schedule, or every milestone is attested. */
+  nextMilestoneProgress: NextMilestoneProgress | null;
   stats: {
     donorCount: number;
     milestonesAttested: number;

@@ -9,9 +9,9 @@ const steps = [
       'Pick a GPS-bounded reforestation plot and contribute. Your funds are held in escrow, not sent to the operator up front.',
   },
   {
-    title: 'Funds release on progress',
+    title: 'Funds release on proven upkeep',
     description:
-      'Satellite data confirms real forest-cover change on the plot. Funds release in tranches as milestones are met — never as one lump sum.',
+      'Satellite data checks the plot on a schedule. A tranche releases only after the forest has held for the agreed stretch of time — never as one lump sum.',
   },
 ];
 

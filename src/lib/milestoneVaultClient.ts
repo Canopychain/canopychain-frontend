@@ -26,6 +26,7 @@ export type MilestoneVaultClient = Client & {
     new_attestor: string;
   }): Promise<AssembledTransaction<null>>;
   cancel_project(args: { project_id: bigint }): Promise<AssembledTransaction<null>>;
+  refund(args: { project_id: bigint; donor: string }): Promise<AssembledTransaction<bigint>>;
 };
 
 /**
