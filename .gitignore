@@ -15,3 +15,5 @@ tsconfig.tsbuildinfo
 # written by `next dev` on every run
 AGENTS.md
 CLAUDE.md
+.vercel
+.env*
