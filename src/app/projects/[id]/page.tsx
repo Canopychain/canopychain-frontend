@@ -7,6 +7,7 @@ import { PolygonMap } from '@/components/project/PolygonMap';
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
 import { getProject, type ProjectProfile } from '@/lib/api';
+import { formatAmount } from '@/lib/format';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -85,11 +86,11 @@ export default async function ProjectPage({ params }: Props) {
         <dl className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
           <div>
             <dt className="text-sm text-gray-500">Total deposited</dt>
-            <dd className="text-lg font-semibold">{project.totalDeposited}</dd>
+            <dd className="text-lg font-semibold">{formatAmount(project.totalDeposited)}</dd>
           </div>
           <div>
             <dt className="text-sm text-gray-500">Total released</dt>
-            <dd className="text-lg font-semibold">{project.totalReleased}</dd>
+            <dd className="text-lg font-semibold">{formatAmount(project.totalReleased)}</dd>
           </div>
           <div>
             <dt className="text-sm text-gray-500">Milestones attested</dt>

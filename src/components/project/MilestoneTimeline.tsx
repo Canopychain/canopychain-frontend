@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 
 import { getProject, type Milestone, type NextMilestoneProgress } from '@/lib/api';
+import { formatAmount } from '@/lib/format';
 
 // Attestation happens on the backend's own schedule (a satellite check
 // confirming a plot has held its retention floor long enough), not in
@@ -118,7 +119,7 @@ export function MilestoneTimeline({
               {attested ? (
                 <p className="mt-1 text-sm text-gray-600">
                   Attested{milestone.attestedAt ? ` ${formatDate(milestone.attestedAt)}` : ''}
-                  {milestone.payoutAmount ? ` — released ${milestone.payoutAmount}` : ''}
+                  {milestone.payoutAmount ? ` — released ${formatAmount(milestone.payoutAmount)}` : ''}
                 </p>
               ) : isNext && progress ? (
                 <div className="mt-2 max-w-sm">

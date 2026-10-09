@@ -104,7 +104,7 @@ describe('MilestoneTimeline', () => {
             index: 0,
             status: 'ATTESTED',
             attestedAt: '2026-01-15T00:00:00.000Z',
-            payoutAmount: '500',
+            payoutAmount: '5000000000', // 500 XLM, in stroops
           }),
           makeMilestone({ id: 'm-1', index: 1, status: 'PENDING' }),
         ]}
@@ -114,7 +114,7 @@ describe('MilestoneTimeline', () => {
 
     const items = screen.getAllByRole('listitem');
     expect(within(items[0]).getByText(/^Attested/)).toBeInTheDocument();
-    expect(within(items[0]).getByText(/released 500/i)).toBeInTheDocument();
+    expect(within(items[0]).getByText(/released 500 XLM/i)).toBeInTheDocument();
     expect(within(items[1]).getByText('Pending')).toBeInTheDocument();
   });
 

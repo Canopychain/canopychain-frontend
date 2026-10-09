@@ -4,6 +4,7 @@ import { useState, type FormEvent } from 'react';
 
 import { useToast } from '@/components/toast/ToastProvider';
 import { useWallet } from '@/components/wallet/WalletProvider';
+import { formatAmount } from '@/lib/format';
 import { getMilestoneVaultClient } from '@/lib/milestoneVaultClient';
 import { getNativeAssetAddress } from '@/lib/stellar';
 
@@ -91,7 +92,8 @@ export function FundProjectForm({
       <div className="rounded-lg border border-green-200 bg-green-50 p-6">
         <p className="font-medium text-green-800">Deposit confirmed!</p>
         <p className="mt-1 text-sm text-green-700">
-          The project&apos;s pool now holds {totalDeposited} (raw units) total.
+          The project&apos;s pool now holds{' '}
+          {formatAmount(totalDeposited, tokenChoice === 'native' ? 'XLM' : '')} total.
         </p>
       </div>
     );
