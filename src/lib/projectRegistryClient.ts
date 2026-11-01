@@ -1,5 +1,5 @@
 import { Client } from '@stellar/stellar-sdk/contract';
-import type { AssembledTransaction } from '@stellar/stellar-sdk/contract';
+import type { AssembledTransaction, Result } from '@stellar/stellar-sdk/contract';
 
 import type { WalletSignTransaction } from '@/components/wallet/WalletProvider';
 
@@ -11,6 +11,9 @@ import { NETWORK_PASSPHRASE, PROJECT_REGISTRY_CONTRACT_ID, SOROBAN_RPC_URL } fro
  * the app actually calls, mirroring the signatures in the contract's lib.rs.
  * Regenerate properly with `stellar contract bindings typescript` if this
  * grows much past a handful of methods.
+ *
+ * Entry points that return `Result<T, Error>` in Rust resolve to an
+ * `Ok`/`Err` wrapper, not a bare value: call `.unwrap()` on `result`.
  */
 export type ProjectRegistryClient = Client & {
   register(args: {
@@ -19,8 +22,8 @@ export type ProjectRegistryClient = Client & {
     attestor: string;
     polygon_hash: Uint8Array;
     name: string;
-  }): Promise<AssembledTransaction<bigint>>;
-  approve_project(args: { project_id: bigint }): Promise<AssembledTransaction<null>>;
+  }): Promise<AssembledTransaction<Result<bigint>>>;
+  approve_project(args: { project_id: bigint }): Promise<AssembledTransaction<Result<void>>>;
 };
 
 /**

@@ -28,7 +28,7 @@ export function RefundButton({
         donor: address,
       });
       const { result } = await tx.signAndSend();
-      showToast('success', `Refunded ${formatAmount(String(result))}.`);
+      showToast('success', `Refunded ${formatAmount(String(result.unwrap()))}.`);
       onRefunded();
     } catch (err) {
       // The contract returns NothingToRefund once a donor's share has

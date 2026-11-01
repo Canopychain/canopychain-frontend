@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Ok } from '@stellar/stellar-sdk/contract';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { OperatorRegistrationForm } from './OperatorRegistrationForm';
@@ -114,7 +115,7 @@ describe('OperatorRegistrationForm', () => {
 
   it('registers on-chain then posts details to the backend, showing success', async () => {
     mockRegister.mockResolvedValue({
-      signAndSend: vi.fn().mockResolvedValue({ result: 7 }),
+      signAndSend: vi.fn().mockResolvedValue({ result: new Ok(7n) }),
     });
     mockRegisterProjectDetails.mockResolvedValue({});
 
@@ -150,7 +151,7 @@ describe('OperatorRegistrationForm', () => {
   });
 
   it('shows a backend error after the on-chain call already succeeded', async () => {
-    const mockSignAndSend = vi.fn().mockResolvedValue({ result: 7 });
+    const mockSignAndSend = vi.fn().mockResolvedValue({ result: new Ok(7n) });
     mockRegister.mockResolvedValue({ signAndSend: mockSignAndSend });
     mockRegisterProjectDetails.mockRejectedValue(new Error('Failed to submit project details.'));
 

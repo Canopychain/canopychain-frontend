@@ -70,7 +70,7 @@ export function OperatorRegistrationForm() {
         name: name.trim(),
       });
       const { result } = await tx.signAndSend();
-      const onChainId = String(result);
+      const onChainId = String(result.unwrap());
 
       await registerProjectDetails({
         onChainId,

@@ -76,7 +76,7 @@ export function FundProjectForm({
       });
       const { result } = await tx.signAndSend();
 
-      setTotalDeposited(String(result));
+      setTotalDeposited(String(result.unwrap()));
       setSubmitState('success');
       showToast('success', 'Deposit confirmed on-chain.');
     } catch (err) {

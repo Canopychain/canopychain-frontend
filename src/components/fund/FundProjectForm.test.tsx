@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Ok } from '@stellar/stellar-sdk/contract';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { FundProjectForm } from './FundProjectForm';
@@ -85,7 +86,7 @@ describe('FundProjectForm', () => {
 
   it('submits a contract-shaped deposit and shows a success toast', async () => {
     mockDeposit.mockResolvedValue({
-      signAndSend: vi.fn().mockResolvedValue({ result: 1_000_000_000n }),
+      signAndSend: vi.fn().mockResolvedValue({ result: new Ok(1_000_000_000n) }),
     });
 
     const user = userEvent.setup();
