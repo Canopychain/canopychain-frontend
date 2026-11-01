@@ -6,8 +6,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FundProjectForm } from './FundProjectForm';
 
 const DONOR_ADDRESS = 'G' + 'D'.repeat(55);
-const RECIPIENT_ADDRESS = 'G' + 'R'.repeat(55);
-const ATTESTOR_ADDRESS = 'G' + 'T'.repeat(55);
 const NATIVE_TOKEN_ADDRESS = 'CNATIVEFAKE';
 const PROJECT_ON_CHAIN_ID = '7';
 
@@ -45,8 +43,6 @@ function renderForm({ hasMilestoneSchedule = true } = {}) {
   return render(
     <FundProjectForm
       projectOnChainId={PROJECT_ON_CHAIN_ID}
-      recipientAddress={RECIPIENT_ADDRESS}
-      attestorAddress={ATTESTOR_ADDRESS}
       hasMilestoneSchedule={hasMilestoneSchedule}
     />,
   );
@@ -102,8 +98,6 @@ describe('FundProjectForm', () => {
     expect(mockDeposit).toHaveBeenCalledWith({
       donor: DONOR_ADDRESS,
       project_id: 7n,
-      recipient: RECIPIENT_ADDRESS,
-      attestor: ATTESTOR_ADDRESS,
       token: NATIVE_TOKEN_ADDRESS,
       amount: 1_000_000_000n,
     });

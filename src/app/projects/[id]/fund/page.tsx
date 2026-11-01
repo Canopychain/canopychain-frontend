@@ -44,16 +44,18 @@ export default async function FundPage({ params }: Props) {
       <main className="px-6 py-16 sm:px-12">
         <h1 className="text-2xl font-bold">Fund {project.name}</h1>
         <div className="mt-8">
-          {project.recipientAddress && project.attestorAddress ? (
+          {project.cancelled ? (
+            <p className="text-gray-600">
+              This project has been cancelled and can&apos;t accept funds.
+            </p>
+          ) : project.approved ? (
             <FundProjectForm
               projectOnChainId={project.onChainId}
-              recipientAddress={project.recipientAddress}
-              attestorAddress={project.attestorAddress}
               hasMilestoneSchedule={project.milestones.length > 0}
             />
           ) : (
             <p className="text-gray-600">
-              This project hasn&apos;t finished registration yet and can&apos;t accept funds.
+              This project is awaiting admin approval and can&apos;t accept funds yet.
             </p>
           )}
         </div>

@@ -17,13 +17,9 @@ type SubmitState = 'idle' | 'signing' | 'success' | 'error';
 
 export function FundProjectForm({
   projectOnChainId,
-  recipientAddress,
-  attestorAddress,
   hasMilestoneSchedule,
 }: {
   projectOnChainId: string;
-  recipientAddress: string;
-  attestorAddress: string;
   hasMilestoneSchedule: boolean;
 }) {
   const { address, connect, signTransaction } = useWallet();
@@ -69,8 +65,6 @@ export function FundProjectForm({
       const tx = await client.deposit({
         donor: address,
         project_id: BigInt(projectOnChainId),
-        recipient: recipientAddress,
-        attestor: attestorAddress,
         token: tokenAddress,
         amount: depositRaw,
       });

@@ -19,8 +19,6 @@ export type MilestoneVaultClient = Client & {
   deposit(args: {
     donor: string;
     project_id: bigint;
-    recipient: string;
-    attestor: string;
     token: string;
     amount: bigint;
   }): Promise<AssembledTransaction<Result<bigint>>>;
@@ -29,7 +27,10 @@ export type MilestoneVaultClient = Client & {
     new_attestor: string;
   }): Promise<AssembledTransaction<Result<void>>>;
   cancel_project(args: { project_id: bigint }): Promise<AssembledTransaction<Result<void>>>;
-  refund(args: { project_id: bigint; donor: string }): Promise<AssembledTransaction<Result<bigint>>>;
+  refund(args: {
+    project_id: bigint;
+    donor: string;
+  }): Promise<AssembledTransaction<Result<bigint>>>;
 };
 
 /**
