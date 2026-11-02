@@ -5,7 +5,7 @@ reforestation funding platform on Stellar.
 
 **Live:** <https://canopychain-frontend.vercel.app> — on Stellar testnet,
 backed by [canopychain-backend](https://github.com/Canopychain/canopychain-backend)
-on Railway and the contracts in
+on Render and the contracts in
 [canopychain-contracts/deployments.json](https://github.com/Canopychain/canopychain-contracts/blob/main/deployments.json).
 
 ## Stack
